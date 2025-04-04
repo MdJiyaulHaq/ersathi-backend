@@ -38,8 +38,8 @@ class User(AbstractUser):
         "auth.Permission", related_name="core_user_set"
     )
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
 
     class Meta:
         verbose_name = _("user")
@@ -56,8 +56,12 @@ class StudentProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="student_profile",
     )
-    disciplines = models.ManyToManyField(
-        "disciplines.Discipline", related_name="students"
+    discipline = models.ForeignKey(  # Changed from ManyToManyField to ForeignKey
+        "disciplines.Discipline",
+        on_delete=models.SET_NULL,
+        related_name="students",
+        null=True,  # Allowing null values initially to prevent migration issues
+        blank=True,
     )
     phone = models.CharField(
         max_length=20,
