@@ -87,6 +87,7 @@ class NotificationAdmin(admin.ModelAdmin):
     search_fields = ("user__email", "user__username", "message")
     list_editable = ("is_read",)
     list_per_page = 10
+    readonly_fields = ("created_at", "read_at")
     raw_id_fields = ("user",)  # Useful for selecting the user
 
     @admin.display(description="Message Snippet")
