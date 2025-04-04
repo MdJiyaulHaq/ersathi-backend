@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import User
+from django.conf import settings
 
 # Gamification models
 
@@ -20,7 +21,9 @@ class Badge(models.Model):
 
 
 class UserBadge(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="badges")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="badges"
+    )
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name="users")
     awarded_at = models.DateTimeField(auto_now_add=True)
 
@@ -34,7 +37,9 @@ class UserBadge(models.Model):
 
 
 class Point(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="points")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="points"
+    )
     value = models.PositiveIntegerField(default=0)
     reason = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -49,7 +54,7 @@ class Point(models.Model):
 
 class Leaderboard(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="leaderboard"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="leaderboard"
     )
     total_points = models.PositiveIntegerField(default=0)
 

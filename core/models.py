@@ -2,12 +2,24 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator, MinLengthValidator
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 # core models
 
 
 class User(AbstractUser):
-    username = None
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        unique=True,
+        help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
+        validators=[AbstractUser.username_validator],
+        error_messages={
+            "unique": _("A user with that username already exists."),
+        },
+    )
     email = models.EmailField(_("email address"), unique=True)
 
     class Role(models.TextChoices):
@@ -21,15 +33,13 @@ class User(AbstractUser):
     )
     date_joined = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    groups = models.ManyToManyField(
-        "auth.Group", related_name="core_user_set"
-    )
+    groups = models.ManyToManyField("auth.Group", related_name="core_user_set")
     user_permissions = models.ManyToManyField(
         "auth.Permission", related_name="core_user_set"
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     class Meta:
         verbose_name = _("user")
@@ -42,7 +52,9 @@ class User(AbstractUser):
 
 class StudentProfile(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="student_profile"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="student_profile",
     )
     disciplines = models.ManyToManyField(
         "disciplines.Discipline", related_name="students"

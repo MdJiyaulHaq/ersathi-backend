@@ -1,13 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
 
 # progress models
 
 
 class ChapterProgress(models.Model):
     student = models.ForeignKey(
-        "core.User", on_delete=models.CASCADE, related_name="chapter_progress"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="chapter_progress",
     )
     chapter = models.ForeignKey(
         "subjects.Chapter", on_delete=models.CASCADE, related_name="student_progress"
@@ -30,7 +33,9 @@ class ChapterProgress(models.Model):
 
 class QuestionAttempt(models.Model):
     student = models.ForeignKey(
-        "core.User", on_delete=models.CASCADE, related_name="question_attempts"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="question_attempts",
     )
     exam = models.ForeignKey(
         "assessments.Exam", on_delete=models.CASCADE, related_name="question_attempts"

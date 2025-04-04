@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from subjects.models import Subject
+from django.conf import settings
 
 
 # progress models
@@ -34,7 +35,7 @@ class Question(models.Model):
     )
     explanation = models.TextField(blank=True)
     created_by = models.ForeignKey(
-        "core.User",
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         related_name="created_questions",

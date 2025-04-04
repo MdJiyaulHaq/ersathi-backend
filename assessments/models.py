@@ -2,6 +2,7 @@ from django.db import models
 from subjects.models import Subject
 from core.models import User
 from study_materials.models import Question
+from django.conf import settings
 
 
 # assessments models
@@ -20,7 +21,7 @@ class Exam(models.Model):
 
 class ExamAttempt(models.Model):
     student = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="exam_attempts"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="exam_attempts"
     )
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="attempts")
     start_time = models.DateTimeField()
@@ -33,7 +34,7 @@ class ExamAttempt(models.Model):
 
 class AnswerOption(models.Model):
     question = models.ForeignKey(
-        'study_materials.Question', on_delete=models.CASCADE, related_name="options"
+        Question, on_delete=models.CASCADE, related_name="options"
     )
     text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
