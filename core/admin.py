@@ -24,6 +24,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email", "username", "first_name", "last_name")
     list_editable = ("role", "is_staff", "is_active")
     list_per_page = 10
+    readonly_fields = ["is_active", "date_joined", 'last_login']
 
     fieldsets = BaseUserAdmin.fieldsets + (("Role", {"fields": ("role",)}),)
 
