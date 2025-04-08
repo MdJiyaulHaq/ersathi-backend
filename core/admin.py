@@ -24,7 +24,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email", "username", "first_name", "last_name")
     list_editable = ("role", "is_staff", "is_active")
     list_per_page = 10
-    readonly_fields = ["is_active", "date_joined", 'last_login']
+    readonly_fields = ["is_active", "date_joined", "last_login"]
 
     fieldsets = BaseUserAdmin.fieldsets + (("Role", {"fields": ("role",)}),)
 
@@ -73,11 +73,6 @@ class StudentProfileAdmin(admin.ModelAdmin):
     @admin.display(description="User Email")
     def get_user_email(self, obj):
         return obj.user.email
-
-    # Optional: Method to display disciplines (customize as needed)
-    # @admin.display(description='Disciplines')
-    # def display_disciplines(self, obj):
-    #     return ", ".join([d.name for d in obj.disciplines.all()]) # Assumes Discipline has a 'name' field
 
 
 # Define NotificationAdmin

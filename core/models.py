@@ -56,12 +56,28 @@ class StudentProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="student_profile",
     )
-    discipline = models.ForeignKey(  # Changed from ManyToManyField to ForeignKey
-        "disciplines.Discipline",
-        on_delete=models.SET_NULL,
-        related_name="students",
-        null=True,  # Allowing null values initially to prevent migration issues
-        blank=True,
+
+    class DisciplineChoices(models.TextChoices):
+        CIVIL = "CIVIL", _("Civil Engineering")
+        COMPUTER = "COMP", _("Computer Engineering")
+        SOFTWARE = "BSE", _("Software Engineering")
+        EEE = "EEE", _("Electrical and Electronics Engineering")
+        CHEMICAL = "CHEM", _("Chemical Engineering")
+        ELECTRICAL = "ELEC", _("Electrical Engineering")
+        ECE = "ECE", _("Electronics and Communication Engineering")
+        CIVIL_RURAL = "CIVR", _("Civil and Rural Engineering")
+        ARCHITECTURE = "ARCH", _("Architecture Engineering")
+        AUTOMOBILE = "AUTO", _("Automobile Engineering")
+        ELECTRONICS = "ELEN", _("Electronics Engineering")
+        MECHANICAL = "MECH", _("Mechanical Engineering")
+        AEROSPACE = "AERO", _("Aerospace Engineering")
+        AGRICULTURAL = "AGRI", _("Agricultural Engineering")
+
+    discipline = models.CharField(
+        max_length=50,  # Adjust max_length based on your longest choice value
+        choices=DisciplineChoices.choices,
+        null=True,  # Keep null=True initially if migrating existing data
+        blank=True,  # Keep blank=True if it should be optional in forms/admin
     )
     phone = models.CharField(
         max_length=20,
