@@ -67,8 +67,8 @@ class StudentProfile(models.Model):
         max_length=20,
         validators=[
             RegexValidator(
-                regex=r"^\+?1?\d{9,15}$",
-                message="Phone number must be in format: '+999999999'",
+                regex=r"^(?:\+977|00977)?(?:98|97)\d{8}$",
+                message="Phone number must start with '+977' or '00977' followed by a 10-digit number starting with 98 or 97.",
             ),
             MinLengthValidator(9),
         ],
