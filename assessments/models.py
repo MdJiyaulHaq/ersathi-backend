@@ -7,6 +7,20 @@ from django.conf import settings
 
 # assessments models
 class Exam(models.Model):
+    class ExamType(models.TextChoices):
+        MOCK_TEST = "MOCK", "Mock Test"
+        SUBJECT_TEST = "SUBJECT", "Subject Test"
+        CHAPTER_QUIZ = "CHAPTER", "Chapter Quiz"
+        PAST_PAPER = "PAST", "Past Paper"
+        PRACTICE_SET = "PRACTICE", "Practice Set"
+
+    exam_type = models.CharField(
+        max_length=10,
+        choices=ExamType.choices,
+        default=ExamType.MOCK_TEST,
+        db_index=True,
+        help_text="Select the category of the exam.",
+    )
     title = models.CharField(max_length=200)
     description = models.TextField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="exams")
@@ -16,7 +30,7 @@ class Exam(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.title} ({self.subject})"
+        return f"{self.get_exam_type_display()}: {self.title} ({self.subject})"
 
 
 class ExamAttempt(models.Model):

@@ -5,26 +5,61 @@ from .models import Exam, ExamAttempt, AnswerOption
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
     list_display = (
-        "title",
+        "get_exam_title",
+        "exam_type",
         "subject",
         "duration",
         "passing_score",
         "start_date",
         "end_date",
     )
-    list_filter = ("subject", "passing_score", "start_date", "end_date")
-    search_fields = ("title", "description", "subject__name", "subject__code")
+    list_filter = ("exam_type", "subject", "passing_score", "start_date", "end_date")
+    search_fields = (
+        "title",
+        "description",
+        "subject__name",
+        "subject__code",
+        "exam_type",
+    )
     list_editable = ("passing_score", "duration")
     list_per_page = 10
+    readonly_fields = ()
 
     fieldsets = (
-        ("Basic Information", {"fields": ("title", "description", "subject")}),
-        ("Exam Settings", {"fields": ("duration", "passing_score")}),
-        ("Schedule", {"fields": ("start_date", "end_date")}),
+        (
+            "Basic Information",
+            {
+                "fields": ("title", "description", "subject", "exam_type"),
+                "description": "Enter the fundamental information about the exam",
+            },
+        ),
+        (
+            "Exam Settings",
+            {
+                "fields": ("duration", "passing_score"),
+                "description": "Configure exam duration and passing criteria",
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Schedule",
+            {
+                "fields": ("start_date", "end_date"),
+                "description": "Set the examination period",
+                "classes": ("collapse",),
+            },
+        ),
     )
 
     autocomplete_fields = ["subject"]
     ordering = ("-start_date", "title")
+
+    def get_exam_title(self, obj):
+        """Display exam title with type indicator"""
+        return f"{obj.title} ({obj.get_exam_type_display()})"
+
+    get_exam_title.short_description = "Exam Title"
+    get_exam_title.admin_order_field = "title"
 
 
 @admin.register(ExamAttempt)
