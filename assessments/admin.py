@@ -1,19 +1,28 @@
+# ersathi-backend/assessments/admin.py
+
 from django.contrib import admin
+
+# Make sure AnswerOption is imported if needed elsewhere, but we won't register it separately
 from .models import Exam, ExamAttempt, AnswerOption
+from django.utils.translation import gettext_lazy as _
 
 
+# --- Admin Configuration for Exam Model ---
+# Keep the ExamAdmin class as previously defined (with exam_type etc.)
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
+    """Admin interface for Exam model"""
+
+    # (Your existing ExamAdmin code from the previous response goes here)
     list_display = (
         "get_exam_title",
-        "exam_type",
         "subject",
         "duration",
         "passing_score",
         "start_date",
         "end_date",
     )
-    list_filter = ("exam_type", "subject", "passing_score", "start_date", "end_date")
+    list_filter = ("exam_type", "subject", "start_date", "end_date", "passing_score")
     search_fields = (
         "title",
         "description",
@@ -21,31 +30,33 @@ class ExamAdmin(admin.ModelAdmin):
         "subject__code",
         "exam_type",
     )
-    list_editable = ("passing_score", "duration")
-    list_per_page = 10
+    list_editable = ("duration", "passing_score")
+    list_per_page = 15
     readonly_fields = ()
 
     fieldsets = (
         (
-            "Basic Information",
+            _("Basic Information"),
             {
-                "fields": ("title", "description", "subject", "exam_type"),
-                "description": "Enter the fundamental information about the exam",
+                "fields": ("title", "exam_type", "subject", "description"),
+                "description": _("Enter the fundamental information about the exam."),
             },
         ),
         (
-            "Exam Settings",
+            _("Exam Settings"),
             {
                 "fields": ("duration", "passing_score"),
-                "description": "Configure exam duration and passing criteria",
+                "description": _(
+                    "Configure exam duration (minutes) and passing score (%)."
+                ),
                 "classes": ("collapse",),
             },
         ),
         (
-            "Schedule",
+            _("Schedule"),
             {
                 "fields": ("start_date", "end_date"),
-                "description": "Set the examination period",
+                "description": _("Set the optional examination period."),
                 "classes": ("collapse",),
             },
         ),
@@ -54,16 +65,21 @@ class ExamAdmin(admin.ModelAdmin):
     autocomplete_fields = ["subject"]
     ordering = ("-start_date", "title")
 
+    @admin.display(description=_("Exam Title & Type"), ordering="title")
     def get_exam_title(self, obj):
-        """Display exam title with type indicator"""
-        return f"{obj.title} ({obj.get_exam_type_display()})"
+        """Display exam title combined with its type for clarity."""
+        if hasattr(obj, "get_exam_type_display"):
+            return f"{obj.title} ({obj.get_exam_type_display()})"
+        return obj.title
 
-    get_exam_title.short_description = "Exam Title"
-    get_exam_title.admin_order_field = "title"
 
-
+# --- Admin Configuration for ExamAttempt Model ---
+# Keep the ExamAttemptAdmin class as previously defined
 @admin.register(ExamAttempt)
 class ExamAttemptAdmin(admin.ModelAdmin):
+    """Admin interface for ExamAttempt model"""
+
+    # (Your existing ExamAttemptAdmin code from the previous response goes here)
     list_display = (
         "student",
         "exam",
@@ -72,40 +88,18 @@ class ExamAttemptAdmin(admin.ModelAdmin):
         "end_time",
         "get_duration",
     )
-    list_filter = ("exam", "start_time", "score")
-    search_fields = ("student__email", "student__username", "exam__title")
-    readonly_fields = ("start_time", "end_time")
-    list_per_page = 10
-
+    list_filter = ("exam", "student", "start_time")
+    search_fields = ("student__username", "student__email", "exam__title")
+    readonly_fields = ("student", "exam", "start_time", "end_time", "score")
+    list_per_page = 20
     autocomplete_fields = ["student", "exam"]
     ordering = ("-start_time",)
 
+    @admin.display(description=_("Duration"))
     def get_duration(self, obj):
-        """Calculate the duration of the exam attempt"""
-        duration = obj.end_time - obj.start_time
-        minutes = duration.total_seconds() / 60
-        return f"{minutes:.1f} minutes"
-
-    get_duration.short_description = "Duration"
-
-
-@admin.register(AnswerOption)
-class AnswerOptionAdmin(admin.ModelAdmin):
-    list_display = ("text", "question", "is_correct", "get_question_type")
-    list_filter = ("is_correct", "question__question_type")
-    search_fields = ("text", "question__text")
-    list_editable = ("is_correct",)
-    list_per_page = 10
-
-    autocomplete_fields = ["question"]
-    ordering = ("question", "-is_correct")
-
-    def get_question_type(self, obj):
-        """Get the question type for display"""
-        return obj.question.get_question_type_display()
-
-    get_question_type.short_description = "Question Type"
-
-    def has_module_permission(self, request):
-        """Only show this model in admin if user is staff"""
-        return request.user.is_staff
+        """Calculate and display the duration of the exam attempt."""
+        if obj.end_time and obj.start_time:
+            duration = obj.end_time - obj.start_time
+            minutes = duration.total_seconds() / 60
+            return f"{minutes:.1f} minutes"
+        return _("N/A")
