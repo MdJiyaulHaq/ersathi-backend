@@ -1,8 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # subjects models
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -40,11 +43,11 @@ class Chapter(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(blank=True)
     chapter_number = models.PositiveIntegerField()
-    content = models.TextField()
+    content = RichTextUploadingField()
     video_url = models.URLField(blank=True)
-    learning_objectives = models.TextField(blank=True)
-    estimated_duration = models.PositiveIntegerField(
-        help_text=_("Estimated time to complete in minutes"), null=True, blank=True
+    learning_objectives = RichTextField(blank=True)
+    estimated_duration_hours = models.PositiveIntegerField(
+        help_text=_("Estimated time to complete in hours")
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

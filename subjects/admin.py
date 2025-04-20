@@ -15,7 +15,7 @@ class SubjectAdmin(admin.ModelAdmin):
 
 @admin.register(Chapter)
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ("title", "subject", "chapter_number", "estimated_duration")
+    list_display = ("title", "subject", "chapter_number", "estimated_duration_hours")
     list_filter = ("subject", "created_at")
     search_fields = ("title", "content", "learning_objectives")
     prepopulated_fields = {"slug": ("title",)}
@@ -25,5 +25,5 @@ class ChapterAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("subject", "title", "slug", "chapter_number")}),
         (_("Content"), {"fields": ("content", "video_url", "learning_objectives")}),
-        (_("Duration"), {"fields": ("estimated_duration",), "classes": ("collapse",)}),
+        (_("Duration"), {"fields": ("estimated_duration_hours",), "classes": ("collapse",)}),
     )

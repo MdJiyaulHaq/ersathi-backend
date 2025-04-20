@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "debug_toolbar",
+    "ckeditor",
+    "ckeditor_uploader",
     "core",
     "assessments",
     "progress",
@@ -146,6 +148,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Media files configuration
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+CKEDITOR_UPLOAD_PATH = "ck_editor_uploads/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

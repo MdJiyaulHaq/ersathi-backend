@@ -26,6 +26,8 @@ admin.site.index_title = "Admin"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
+
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:
