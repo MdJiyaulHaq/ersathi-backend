@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator, MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
+from disciplines.models import Discipline
+
 # core models
 
 
@@ -57,12 +59,13 @@ class StudentProfile(models.Model):
         related_name="student_profile",
     )
     discipline = models.ForeignKey(
-        "disciplines.Discipline",
+        Discipline,
         on_delete=models.PROTECT,
         related_name="students",
         null=True,
         blank=True,
     )
+
     phone = models.CharField(
         max_length=20,
         validators=[
