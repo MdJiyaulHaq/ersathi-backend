@@ -7,4 +7,3 @@ class DisciplineAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     search_fields = ("name", "description")
     prepopulated_fields = {"slug": ("name",)}
-    filter_horizontal = ("related_disciplines",)

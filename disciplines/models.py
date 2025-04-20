@@ -28,7 +28,6 @@ class Discipline(models.Model):
     )
     slug = models.SlugField(unique=True)
     description = models.TextField()
-    related_disciplines = models.ManyToManyField("self", blank=True)
 
     def __str__(self):
         return self.get_name_display()
