@@ -21,6 +21,10 @@ class LikedItem(models.Model):
     # what Like applied to what object
     like = models.ForeignKey(Like, on_delete=models.CASCADE)
 
+    student = models.ForeignKey(
+        "core.StudentProfile", on_delete=models.CASCADE, related_name="liked_items"
+    )
+
     # Type (product, video, article, etc)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 
