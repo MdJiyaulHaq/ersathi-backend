@@ -10,30 +10,26 @@ class UserAdmin(BaseUserAdmin):
         "username",
         "first_name",
         "last_name",
-        "role",
         "is_staff",
         "is_active",
         "date_joined",
     )
     list_filter = BaseUserAdmin.list_filter + (
-        "role",
         "is_staff",
         "is_active",
         "date_joined",
     )
     search_fields = ("email", "username", "first_name", "last_name")
-    list_editable = ("role", "is_staff", "is_active")
+    list_editable = ("is_staff", "is_active")
     list_per_page = 10
     readonly_fields = ["is_active", "date_joined", "last_login"]
-
-    fieldsets = BaseUserAdmin.fieldsets + (("Role", {"fields": ("role",)}),)
 
     add_fieldsets = (
         (
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "username", "password1", "password2", "role"),
+                "fields": ("email", "username", "password1", "password2"),
             },
         ),
     )

@@ -23,23 +23,8 @@ class User(AbstractUser):
         },
     )
     email = models.EmailField(_("email address"), unique=True)
-
-    class Role(models.TextChoices):
-        STUDENT = "student", _("Student")
-        ADMIN = "admin", _("Admin")
-
-    role = models.CharField(
-        max_length=10,
-        choices=Role.choices,
-        default=Role.STUDENT,
-    )
     date_joined = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    groups = models.ManyToManyField("auth.Group", related_name="core_user_set")
-    user_permissions = models.ManyToManyField(
-        "auth.Permission", related_name="core_user_set"
-    )
-
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email", "first_name", "last_name"]
 
