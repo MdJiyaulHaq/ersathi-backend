@@ -6,6 +6,7 @@ from .models import User, StudentProfile, Notification
 # Define custom UserAdmin
 class UserAdmin(BaseUserAdmin):
     list_display = (
+        "id",
         "email",
         "username",
         "first_name",
@@ -50,6 +51,7 @@ class StudentProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "get_user_email",
+        "discipline",
         "phone",
         "registration_date",
         "last_active",
@@ -62,9 +64,19 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "user__last_name",
         "phone",
     )
-    list_editable = ("phone",)
+    list_editable = ("phone", "discipline")
     list_per_page = 10
-    raw_id_fields = ("user",)  # Useful for selecting the user efficiently
+    raw_id_fields = ("user",)
+
+    fields = (
+        "user",
+        "discipline",
+        "phone",
+        "bio",
+        "registration_date",
+        "last_active",
+    )
+    readonly_fields = ("registration_date", "last_active")
 
     @admin.display(description="User Email")
     def get_user_email(self, obj):
