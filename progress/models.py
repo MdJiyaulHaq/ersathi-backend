@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -27,8 +28,17 @@ class ChapterProgress(models.Model):
         verbose_name = _("chapter progress")
         verbose_name_plural = _("chapter progress")
 
+    @property
+    def is_completed(self):
+        return self.completion_percentage == 100
+
     def __str__(self):
         return f"{self.student.get_full_name()} - {self.chapter}"
+
+    def save(self, *args, **kwargs):
+        if self.completion_percentage == 100 and not self.completion_date:
+            self.completion_date = timezone.now()
+        super().save(*args, **kwargs)
 
 
 class QuestionAttempt(models.Model):

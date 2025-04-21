@@ -34,6 +34,9 @@ class ChapterProgressAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("start_date", "last_accessed")
 
+    def has_add_permission(self, request):
+        return False
+
 
 @admin.register(QuestionAttempt)
 class QuestionAttemptAdmin(admin.ModelAdmin):
