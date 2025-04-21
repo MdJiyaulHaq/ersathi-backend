@@ -1,8 +1,10 @@
+from datetime import timedelta
 from django.db import models
 from subjects.models import Subject
 from core.models import User
 from study_materials.models import Question
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 # assessments models
@@ -12,7 +14,6 @@ class Exam(models.Model):
         SUBJECT_TEST = "SUBJECT", "Subject Test"
         CHAPTER_QUIZ = "CHAPTER", "Chapter Quiz"
         PAST_PAPER = "PAST", "Past Paper"
-        PRACTICE_SET = "PRACTICE", "Practice Set"
 
     exam_type = models.CharField(
         max_length=10,
@@ -21,13 +22,25 @@ class Exam(models.Model):
         db_index=True,
         help_text="Select the category of the exam.",
     )
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    title = models.CharField(max_length=200, unique=True)
+    description = models.TextField(null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="exams")
     duration = models.PositiveIntegerField(help_text="Duration in minutes")
-    passing_score = models.PositiveIntegerField(default=70)
+    passing_score = models.PositiveIntegerField(
+        default=50, validators=[MinValueValidator(50), MaxValueValidator(100)]
+    )
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.start_date and self.duration:
+            self.end_date = self.start_date + timedelta(minutes=self.duration)
+        else:
+            self.end_date = None
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.get_exam_type_display()}: {self.title} ({self.subject})"

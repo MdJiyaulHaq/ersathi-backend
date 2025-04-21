@@ -32,7 +32,7 @@ class ExamAdmin(admin.ModelAdmin):
     )
     list_editable = ("duration", "passing_score")
     list_per_page = 15
-    readonly_fields = ()
+    readonly_fields = ("end_date",)
 
     fieldsets = (
         (
