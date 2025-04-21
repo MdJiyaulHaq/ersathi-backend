@@ -37,8 +37,10 @@ class QuestionAttempt(models.Model):
         on_delete=models.CASCADE,
         related_name="question_attempts",
     )
-    exam = models.ForeignKey(
-        "assessments.Exam", on_delete=models.CASCADE, related_name="question_attempts"
+    exam_attempt = models.ForeignKey(
+        "assessments.ExamAttempt",
+        on_delete=models.CASCADE,
+        related_name="question_attempts",
     )
     question = models.ForeignKey(
         "study_materials.Question", on_delete=models.CASCADE, related_name="attempts"
@@ -51,15 +53,21 @@ class QuestionAttempt(models.Model):
         related_name="attempts",
     )
     is_correct = models.BooleanField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    answered_at = models.DateTimeField(auto_now_add=True)
     time_taken = models.PositiveIntegerField(
-        help_text=_("Time taken in seconds"), null=True
+        help_text=_("Time taken in seconds"),
+        null=True,
+        validators=[MinValueValidator(0)],
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-timestamp"]
+        ordering = ["-created_at"]
         verbose_name = _("question attempt")
         verbose_name_plural = _("question attempts")
+        unique_together = ["exam_attempt", "question"]
 
     def __str__(self):
-        return f"{self.student.get_full_name()} - {self.question}"
+        correctness = "✔️" if self.is_correct else "❌"
+        return f"{self.student.get_full_name()} - {self.question} [{correctness}] ({self.exam_attempt.exam})"
