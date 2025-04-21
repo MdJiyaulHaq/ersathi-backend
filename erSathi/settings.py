@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "ckeditor",
     "ckeditor_uploader",
+    "smart_selects",
     "core",
     "assessments",
     "progress",

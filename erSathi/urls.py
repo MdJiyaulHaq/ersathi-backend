@@ -28,6 +28,7 @@ urlpatterns = [
     path("", include("core.urls")),
 
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path("chaining/", include("smart_selects.urls")),
 ]
 
 if settings.DEBUG:

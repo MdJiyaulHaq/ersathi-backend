@@ -3,8 +3,10 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
-from subjects.models import Subject
+from subjects.models import Chapter, Subject
 from django.conf import settings
+from django.core.validators import FileExtensionValidator
+from smart_selects.db_fields import ChainedForeignKey
 
 
 class Question(models.Model):
@@ -67,15 +69,83 @@ class Question(models.Model):
 
 
 class StudyMaterial(models.Model):
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        if self.material_type == "PDF":
+            if not self.file:
+                raise ValidationError("PDF materials must have an uploaded PDF file.")
+            if not self.file.name.lower().endswith(".pdf"):
+                raise ValidationError(
+                    "Only PDF files are allowed for PDF material type."
+                )
+
+        elif self.material_type == "IMAGE":
+            if not self.file:
+                raise ValidationError(
+                    "Image materials must have an uploaded image file."
+                )
+            if not any(
+                self.file.name.lower().endswith(ext)
+                for ext in [".jpg", ".jpeg", ".png", ".gif"]
+            ):
+                raise ValidationError(
+                    "Only image files (.jpg, .jpeg, .png, .gif) are allowed for image material type."
+                )
+
+        elif self.material_type == "VIDEO":
+            if not self.file:
+                raise ValidationError(
+                    "Video materials must have an uploaded video file."
+                )
+            if not any(
+                self.file.name.lower().endswith(ext)
+                for ext in [".mp4", ".mov", ".avi", ".mkv"]
+            ):
+                raise ValidationError(
+                    "Only video files (.mp4, .mov, .avi, .mkv) are allowed for video material type."
+                )
+
+        elif self.material_type == "LINK":
+            if not self.url:
+                raise ValidationError("Link materials must have a valid URL.")
+            if self.file:
+                raise ValidationError(
+                    "Link materials should not have an uploaded file."
+                )
+
+        else:
+            raise ValidationError("Invalid material type selected.")
+
     MATERIAL_TYPES = [
         ("PDF", "PDF"),
+        ("IMAGE", "Image"),
         ("VIDEO", "Video"),
         ("LINK", "Link"),
     ]
 
     title = models.CharField(max_length=200)
     material_type = models.CharField(max_length=10, choices=MATERIAL_TYPES)
-    file = models.FileField(upload_to="study_materials/files/", blank=True, null=True)
+    file = models.FileField(
+        upload_to="study_materials/files/",
+        blank=True,
+        null=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=[
+                    "pdf",
+                    "jpg",
+                    "jpeg",
+                    "png",
+                    "gif",
+                    "mp4",
+                    "mov",
+                    "avi",
+                    "mkv",
+                ]
+            )
+        ],
+    )
     url = models.URLField(blank=True, null=True)
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name="materials"
@@ -83,11 +153,13 @@ class StudyMaterial(models.Model):
     chapter = models.ForeignKey(
         "subjects.Chapter",
         on_delete=models.CASCADE,
-        related_name="materials",
-        null=True,
-        blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Study Material"
+        verbose_name_plural = "Study Materials"
