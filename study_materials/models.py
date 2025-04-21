@@ -14,17 +14,23 @@ class Question(models.Model):
     Represents a Multiple Choice Question for an exam, with specific marks.
     """
 
+    subject = models.ForeignKey(
+        Subject, on_delete=models.CASCADE, related_name="questions"
+    )
+    chapter = ChainedForeignKey(
+        Chapter,
+        chained_field="subject",
+        chained_model_field="subject",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        on_delete=models.CASCADE,
+    )
     MARKS_CHOICES = [
         (1, _("1 Mark")),
         (2, _("2 Marks")),
     ]
 
-    exam = models.ForeignKey(
-        "assessments.Exam",
-        on_delete=models.CASCADE,
-        related_name="questions",
-        help_text=_("The exam this question belongs to."),
-    )
     text = models.TextField(help_text=_("The main text/body of the question."))
     marks = models.PositiveSmallIntegerField(
         choices=MARKS_CHOICES,
@@ -50,7 +56,6 @@ class Question(models.Model):
 
     class Meta:
         ordering = [
-            "exam",
             "-marks",
             "-created_at",
         ]  # Order by exam, then marks, then creation time
