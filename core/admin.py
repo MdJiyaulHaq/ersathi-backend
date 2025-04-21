@@ -86,12 +86,12 @@ class StudentProfileAdmin(admin.ModelAdmin):
 # Define NotificationAdmin
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ("user", "message_snippet", "is_read", "created_at")
-    list_filter = ("is_read", "created_at", "user")
+    list_display = ("user", "type", "message_snippet", "is_read", "created_at", "link")
+    list_filter = ("type", "is_read", "created_at", "user")
     search_fields = ("user__email", "user__username", "message")
     list_editable = ("is_read",)
     list_per_page = 10
-    readonly_fields = ("created_at", "read_at")
+    readonly_fields = ("created_at", "read_at", "link")
     raw_id_fields = ("user",)  # Useful for selecting the user
 
     @admin.display(description="Message Snippet")

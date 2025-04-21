@@ -75,13 +75,26 @@ class StudentProfile(models.Model):
 
 
 class Notification(models.Model):
+    class NotificationType(models.TextChoices):
+        EXAM = "EXAM", "Exam"
+        MATERIAL = "STUDY_MATERIAL", "Study Material"
+        SYSTEM = "SYSTEM", "System"
+        ANNOUNCEMENT = "ANNOUNCEMENT", "Announcement"
+
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="notifications"
     )
+    type = models.CharField(
+        max_length=20, choices=NotificationType.choices, default=NotificationType.SYSTEM
+    )
     message = models.TextField()
+    link = models.URLField(blank=True, null=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
-        return f"Notification for {self.user.email}"
+        return f"{self.user.email} | {self.message[:30]}{'...' if len(self.message) > 30 else ''}"
