@@ -53,7 +53,25 @@ class ExamAttempt(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="attempts")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    score = models.FloatField()
+    score = models.PositiveIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
+
+    class AttemptStatus(models.TextChoices):
+        IN_PROGRESS = "IN_PROGRESS", "In Progress"
+        COMPLETED = "COMPLETED", "Completed"
+        CANCELLED = "CANCELLED", "Cancelled"
+
+    status = models.CharField(
+        max_length=15, choices=AttemptStatus.choices, default=AttemptStatus.IN_PROGRESS
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.end_time and self.start_time:
+            self.end_time = self.start_time + timedelta(minutes=self.exam.duration)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.student} - {self.exam} ({self.score})"

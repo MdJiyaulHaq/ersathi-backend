@@ -87,13 +87,26 @@ class ExamAttemptAdmin(admin.ModelAdmin):
         "start_time",
         "end_time",
         "get_duration",
+        "status",
     )
-    list_filter = ("exam", "student", "start_time")
+    list_filter = ("exam", "student", "start_time", "status")
     search_fields = ("student__username", "student__email", "exam__title")
-    readonly_fields = ("student", "exam", "start_time", "end_time", "score")
+    readonly_fields = (
+        "student",
+        "exam",
+        "start_time",
+        "end_time",
+        "score",
+        "created_at",
+        "updated_at",
+    )
+    date_hierarchy = "start_time"
     list_per_page = 20
     autocomplete_fields = ["student", "exam"]
     ordering = ("-start_time",)
+
+    def has_add_permission(self, request):
+        return False
 
     @admin.display(description=_("Duration"))
     def get_duration(self, obj):
