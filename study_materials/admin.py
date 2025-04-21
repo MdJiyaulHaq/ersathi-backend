@@ -4,10 +4,19 @@ from django.contrib import admin
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from tags.models import TaggedItem
 from .models import Question, StudyMaterial
+from django.contrib.contenttypes.admin import GenericTabularInline
+from tags.models import TaggedItem
 
 # Import AnswerOption from the assessments app to use in the inline
 from assessments.models import AnswerOption
+
+
+class TagInline(GenericTabularInline):
+    model = TaggedItem
+    extra = 1
+    autocomplete_fields = ["tag"]
 
 
 # --- Custom FormSet for Answer Options Inline ---
@@ -96,7 +105,7 @@ class QuestionAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at", "created_by")
 
     # Include the AnswerOption inline interface
-    inlines = [AnswerOptionInline]
+    inlines = [AnswerOptionInline, TagInline]
 
     # Set created_by automatically on save
     def save_model(self, request, obj, form, change):
@@ -112,4 +121,5 @@ class StudyMaterialAdmin(admin.ModelAdmin):
     search_fields = ("title", "subject__name", "chapter__title")
     list_filter = ("material_type", "subject", "created_at")
     autocomplete_fields = ["subject", "chapter"]
+    inlines = [TagInline]
     list_per_page = 20
