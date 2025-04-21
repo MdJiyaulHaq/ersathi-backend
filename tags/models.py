@@ -7,14 +7,11 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Tag(models.Model):
-    label = models.CharField(max_length=255, unique=True)
+    label = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    questions = models.ManyToManyField(
-        "study_materials.Question", related_name="tags", blank=True
-    )
-    study_materials = models.ManyToManyField(
-        "study_materials.StudyMaterial", related_name="tags", blank=True
-    )
+
+    def __str__(self):
+        return self.label
 
 
 # Define a TaggedItem model to associate tags with any model instance
