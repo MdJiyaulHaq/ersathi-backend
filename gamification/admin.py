@@ -13,11 +13,12 @@ class BadgeAdmin(admin.ModelAdmin):
 
 @admin.register(UserBadge)
 class UserBadgeAdmin(admin.ModelAdmin):
-    list_display = ("user", "badge", "awarded_at")
-    list_filter = ("badge", "awarded_at")
+    list_display = ("user", "badge", "active", "awarded_at")
+    list_filter = ("active", "badge", "awarded_at")
     search_fields = ("user__username", "user__email", "badge__name")
     date_hierarchy = "awarded_at"
     autocomplete_fields = ["user", "badge"]
+    readonly_fields = ("awarded_at",)
 
 
 @admin.register(Point)

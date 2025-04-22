@@ -28,6 +28,7 @@ class UserBadge(models.Model):
     )
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name="users")
     awarded_at = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ("user", "badge")
@@ -36,6 +37,9 @@ class UserBadge(models.Model):
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.badge.name}"
+
+    class Meta:
+        ordering = ["-awarded_at"]
 
 
 class Point(models.Model):
