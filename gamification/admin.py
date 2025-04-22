@@ -5,7 +5,8 @@ from .models import Badge, UserBadge, Point, Leaderboard
 
 @admin.register(Badge)
 class BadgeAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at")
+    list_display = ("name", "active", "created_at")
+    list_filter = ("active", "created_at")
     search_fields = ("name", "description")
     date_hierarchy = "created_at"
 
