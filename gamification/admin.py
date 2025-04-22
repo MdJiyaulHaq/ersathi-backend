@@ -29,6 +29,12 @@ class PointAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
     autocomplete_fields = ["user"]
 
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
 @admin.register(Leaderboard)
 class LeaderboardAdmin(admin.ModelAdmin):
     list_display = ("user", "total_points", "last_updated")
@@ -36,3 +42,9 @@ class LeaderboardAdmin(admin.ModelAdmin):
     ordering = ("-total_points",)
     autocomplete_fields = ["user"]
     list_filter = ("total_points",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
