@@ -28,3 +28,8 @@ class TaggedItem(models.Model):
 
     # GenericForeignKey to create a generic relation to any model instance
     content_object = GenericForeignKey()
+
+    class Meta:
+        unique_together = ("tag", "content_type", "object_id")
+        verbose_name = "Tagged Item"
+        verbose_name_plural = "Tagged Items"
