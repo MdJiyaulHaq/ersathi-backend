@@ -23,16 +23,16 @@ class UserBadgeAdmin(admin.ModelAdmin):
 
 @admin.register(Point)
 class PointAdmin(admin.ModelAdmin):
-    list_display = ("user", "value", "reason", "created_at")
-    list_filter = ("created_at",)
+    list_display = ("user", "value", "type", "reason", "created_at")
+    list_filter = ("type", "created_at")
     search_fields = ("user__username", "user__email", "reason")
     date_hierarchy = "created_at"
     autocomplete_fields = ["user"]
 
-
 @admin.register(Leaderboard)
 class LeaderboardAdmin(admin.ModelAdmin):
-    list_display = ("user", "total_points")
+    list_display = ("user", "total_points", "last_updated")
     search_fields = ("user__username", "user__email")
     ordering = ("-total_points",)
     autocomplete_fields = ["user"]
+    list_filter = ("total_points",)

@@ -29,28 +29,37 @@ class UserBadge(models.Model):
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name="users")
     awarded_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ("user", "badge")
-        verbose_name = _("user badge")
-        verbose_name_plural = _("user badges")
+    last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.badge.name}"
 
     class Meta:
+        unique_together = ("user", "badge")
+        verbose_name = _("user badge")
+        verbose_name_plural = _("user badges")
         ordering = ["-awarded_at"]
 
 
 class Point(models.Model):
+    class PointType(models.TextChoices):
+        EXAM = "EXAM", "Exam"
+        BADGE = "BADGE", "Badge"
+        BONUS = "BONUS", "Bonus"
+        SYSTEM = "SYSTEM", "System Generated"
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="points"
     )
     value = models.PositiveIntegerField(default=0)
     reason = models.CharField(max_length=255, blank=True)
+    type = models.CharField(
+        max_length=20, choices=PointType.choices, default=PointType.SYSTEM
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        ordering = ["-created_at"]
         verbose_name = _("point")
         verbose_name_plural = _("points")
 
@@ -63,6 +72,7 @@ class Leaderboard(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="leaderboard"
     )
     total_points = models.PositiveIntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-total_points"]
@@ -70,4 +80,4 @@ class Leaderboard(models.Model):
         verbose_name_plural = _("leaderboards")
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.total_points} points"
+        return f"{self.user.get_full_name()} - {self.total_points} points (Last updated: {self.last_updated})"
