@@ -42,7 +42,7 @@ class Chapter(models.Model):
     )
     title = models.CharField(max_length=200)
     slug = models.SlugField(blank=True)
-    chapter_number = models.PositiveIntegerField()
+    chapter_number = models.PositiveIntegerField(unique=True)
     content = RichTextUploadingField()
     video_url = models.URLField(blank=True)
     learning_objectives = RichTextField(blank=True)
