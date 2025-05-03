@@ -15,7 +15,7 @@ class Subject(models.Model):
         "disciplines.Discipline", related_name="subjects"
     )
     is_core = models.BooleanField(default=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     prerequisites = models.ManyToManyField(
         "self", symmetrical=False, related_name="required_for", blank=True
     )

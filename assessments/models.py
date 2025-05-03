@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.db import models
 from subjects.models import Subject
 from core.models import User
-from study_materials.models import Question
+from questions.models import Question, AnswerOption
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -75,14 +75,3 @@ class ExamAttempt(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.exam} ({self.score})"
-
-
-class AnswerOption(models.Model):
-    question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, related_name="options"
-    )
-    text = models.CharField(max_length=200)
-    is_correct = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.text} ({'Correct' if self.is_correct else 'Incorrect'})"

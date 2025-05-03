@@ -43,26 +43,23 @@ class QuestionAttemptAdmin(admin.ModelAdmin):
     list_display = (
         "student",
         "question",
-        "exam_attempt",
         "is_correct",
-        "time_taken",
         "answered_at",
     )
-    list_filter = ("is_correct", "exam_attempt", "answered_at")
+    list_filter = ("is_correct", "answered_at")
     search_fields = (
         "student__username",
         "student__email",
         "question__text",
-        "exam_attempt__exam__title",
     )
-    raw_id_fields = ("student", "question", "exam_attempt", "selected_answer")
+    raw_id_fields = ("student", "question", "selected_answer")
     readonly_fields = ("answered_at",)
     date_hierarchy = "answered_at"
 
     fieldsets = (
-        (_("Attempt Information"), {"fields": ("student", "exam_attempt", "question")}),
+        (_("Attempt Information"), {"fields": ("student", "question")}),
         (_("Answer"), {"fields": ("selected_answer", "is_correct")}),
-        (_("Performance"), {"fields": ("time_taken", "answered_at")}),
+        (_("Performance"), {"fields": ("answered_at",)}),
     )
 
     def has_add_permission(self, request):
@@ -72,7 +69,6 @@ class QuestionAttemptAdmin(admin.ModelAdmin):
         if obj:  # Editing an existing object
             return self.readonly_fields + (
                 "student",
-                "exam_attempt",
                 "question",
                 "is_correct",
             )

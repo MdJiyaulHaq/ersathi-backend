@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 USE_TZ = True
-TIME_ZONE = 'Asia/Kathmandu'
+TIME_ZONE = "Asia/Kathmandu"
 
 from pathlib import Path
 
@@ -34,27 +34,32 @@ ALLOWED_HOSTS = ["127.0.0.1", "www.yourdomain.com"]  # Update for production
 # Application definition
 
 INSTALLED_APPS = [
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third party apps
     "rest_framework",
-    "django_filters",
     "debug_toolbar",
     "ckeditor",
     "ckeditor_uploader",
     "smart_selects",
-    "core",
-    "assessments",
-    "progress",
-    "study_materials",
-    "subjects",
-    "disciplines",
-    "gamification",
-    "tags",  # Registering the tags app
-    "likes",  # Registering the likes app
+    "django_filters",
+    "corsheaders",
+    # Local apps
+    "core.apps.CoreConfig",
+    "disciplines.apps.DisciplinesConfig",
+    "subjects.apps.SubjectsConfig",
+    "study_materials.apps.StudyMaterialsConfig",
+    "assessments.apps.AssessmentsConfig",
+    "progress.apps.ProgressConfig",
+    "gamification.apps.GamificationConfig",
+    "tags.apps.TagsConfig",
+    "likes.apps.LikesConfig",
+    "questions.apps.QuestionsConfig",  # New questions app
 ]
 
 INTERNAL_IPS = [

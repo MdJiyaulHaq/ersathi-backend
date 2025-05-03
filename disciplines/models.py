@@ -27,7 +27,7 @@ class Discipline(models.Model):
         unique=True
     )
     slug = models.SlugField(unique=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.get_name_display()
