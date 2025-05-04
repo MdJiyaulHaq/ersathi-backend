@@ -4,7 +4,7 @@ from study_materials.views import StudyMaterialViewSet
 
 
 router = DefaultRouter()
-router.register("study-materials", StudyMaterialViewSet, basename="study-materials")
+router.register("", StudyMaterialViewSet, basename="study-materials")
 urlpatterns = [
     path("", include(router.urls)),
 ]
