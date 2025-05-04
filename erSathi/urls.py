@@ -29,6 +29,7 @@ urlpatterns = [
     path("subjects/", include("subjects.urls")),
     path("study-materials/", include("study_materials.urls")),
     path("disciplines/", include("disciplines.urls")),
+    path("questions/", include("questions.urls")),
 
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path("chaining/", include("smart_selects.urls")),
