@@ -19,6 +19,8 @@ class ExamAdmin(admin.ModelAdmin):
         "subject",
         "duration",
         "passing_score",
+        "exam_type",
+        "created_by",
         "start_date",
         "end_date",
     )

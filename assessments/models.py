@@ -5,6 +5,7 @@ from core.models import User
 from questions.models import Question, AnswerOption
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 
 # assessments models
@@ -29,17 +30,22 @@ class Exam(models.Model):
     passing_score = models.PositiveIntegerField(
         default=50, validators=[MinValueValidator(50), MaxValueValidator(100)]
     )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_exams",
+    )
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        if not self.start_date:
+            self.start_date = timezone.now()
         if self.start_date and self.duration:
             self.end_date = self.start_date + timedelta(minutes=self.duration)
-        else:
-            self.end_date = None
-
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -51,8 +57,8 @@ class ExamAttempt(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="exam_attempts"
     )
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="attempts")
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
     score = models.PositiveIntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
@@ -69,6 +75,8 @@ class ExamAttempt(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        if not self.start_time:
+            self.start_time = timezone.now()
         if not self.end_time and self.start_time:
             self.end_time = self.start_time + timedelta(minutes=self.exam.duration)
         super().save(*args, **kwargs)
