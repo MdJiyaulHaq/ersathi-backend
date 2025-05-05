@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -8,10 +9,16 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 class Tag(models.Model):
     label = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.label
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.label)
+        super().save(*args, **kwargs)
 
 
 # Define a TaggedItem model to associate tags with any model instance
