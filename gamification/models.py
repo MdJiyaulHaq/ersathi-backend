@@ -9,9 +9,14 @@ from django.conf import settings
 class Badge(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    icon = models.ImageField(upload_to="badges/icons/", blank=True, null=True)
+    icon = models.ImageField(upload_to="badges/icons/")
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="created_badges",
+    )
 
     class Meta:
         ordering = ["-created_at"]

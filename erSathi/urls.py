@@ -32,6 +32,7 @@ urlpatterns = [
     path("questions/", include("questions.urls")),
     path("assessments/", include("assessments.urls")),
     path("progress/", include("progress.urls")),
+    path("gamification/", include("gamification.urls")),
 
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path("chaining/", include("smart_selects.urls")),
