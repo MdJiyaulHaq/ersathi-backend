@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps
     "rest_framework",
+    "djoser",
     "debug_toolbar",
     "ckeditor",
     "ckeditor_uploader",
@@ -166,3 +167,12 @@ CKEDITOR_UPLOAD_PATH = "ck_editor_uploads/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("JWT",),
+}

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib import admin
 from django.core.validators import RegexValidator, MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -25,8 +26,8 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     class Meta:
         verbose_name = _("user")
@@ -47,8 +48,6 @@ class StudentProfile(models.Model):
         Discipline,
         on_delete=models.PROTECT,
         related_name="students",
-        null=True,
-        blank=True,
     )
 
     phone = models.CharField(
@@ -69,9 +68,6 @@ class StudentProfile(models.Model):
     class Meta:
         verbose_name = _("student profile")
         verbose_name_plural = _("student profiles")
-
-    def __str__(self):
-        return f"Profile of {self.user.get_full_name()}"
 
 
 class Notification(models.Model):

@@ -22,6 +22,7 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ("email", "username", "first_name", "last_name")
     list_editable = ("is_staff", "is_active")
+    ordering = ("first_name", "last_name")
     list_per_page = 10
     readonly_fields = ["is_active", "date_joined", "last_login"]
 
@@ -30,7 +31,14 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "username", "password1", "password2"),
+                "fields": (
+                    "email",
+                    "username",
+                    "password1",
+                    "password2",
+                    "first_name",
+                    "last_name",
+                ),
             },
         ),
     )
@@ -51,6 +59,9 @@ class StudentProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "get_user_email",
+        "user__first_name",
+        "user__last_name",
+        "bio",
         "discipline",
         "phone",
         "registration_date",
@@ -65,6 +76,8 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "phone",
     )
     list_editable = ("phone", "discipline")
+    list_select_related = ("user",)
+    ordering = ("user__first_name", "user__last_name")
     list_per_page = 10
     raw_id_fields = ("user",)
 
