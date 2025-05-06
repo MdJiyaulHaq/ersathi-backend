@@ -61,6 +61,12 @@ class StudentProfile(models.Model):
         ],
         blank=True,
     )
+    date_of_birth = models.DateField(
+        _("date of birth"),
+        blank=True,
+        null=True,
+        help_text=_("Format: YYYY-MM-DD"),
+    )
     bio = models.TextField(blank=True)
     registration_date = models.DateTimeField(auto_now_add=True)
     last_active = models.DateTimeField(auto_now=True)

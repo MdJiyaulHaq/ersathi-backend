@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 USE_TZ = True
 TIME_ZONE = "Asia/Kathmandu"
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -175,4 +176,6 @@ REST_FRAMEWORK = {
 }
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
 }
