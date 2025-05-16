@@ -6,36 +6,43 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from progress.models import ChapterProgress, QuestionAttempt
 from .serializers import ChapterProgressSerializer, QuestionAttemptSerializer
+from core.permissions import IsOwnerOrStaff
 
 
 # Create your views here.
-class QuestionAttemptViewSet(viewsets.ReadOnlyModelViewSet):
-    def get_queryset(self):
-        user = self.request.user
-        return QuestionAttempt.objects.filter(student=user)
-
+class QuestionAttemptViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionAttemptSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["student", "question", "selected_answer", "is_correct"]
+    filterset_fields = ["question", "is_correct", "answered_at"]
     search_fields = ["student__username", "question__text"]
-    ordering_fields = ["answered_at"]
+    ordering_fields = ["answered_at", "time_taken"]
     ordering = ["-answered_at"]
     pagination_class = PageNumberPagination
 
-
-class ChapterProgressViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
-        user = self.request.user
-        return ChapterProgress.objects.filter(student=user)
+        if self.request.user.is_staff:
+            return QuestionAttempt.objects.all()
+        return QuestionAttempt.objects.filter(student=self.request.user)
 
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+
+
+class ChapterProgressViewSet(viewsets.ModelViewSet):
     serializer_class = ChapterProgressSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = [
-        "student",
-        "chapter",
-        "completion_percentage",
-    ]
-    search_fields = ["student__username", "chapter__title"]
-    ordering_fields = ["completion_percentage", "start_date", "completion_date"]
+    filterset_fields = ["chapter", "completion_percentage", "completion_date"]
+    search_fields = ["chapter__title", "student__username"]
+    ordering_fields = ["start_date", "completion_date", "last_accessed"]
     ordering = ["-last_accessed"]
     pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return ChapterProgress.objects.all()
+        return ChapterProgress.objects.filter(student=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)

@@ -3,14 +3,20 @@ from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import AnswerOption, Question
 from rest_framework.filters import OrderingFilter, SearchFilter
-from .serializers import QuestionSerializer, AnswerOptionSerializer, QuestionCreateSerializer
+from .serializers import (
+    QuestionSerializer,
+    AnswerOptionSerializer,
+    QuestionCreateSerializer,
+)
 from rest_framework.pagination import PageNumberPagination
+from core.permissions import IsAcademicStaffOrReadOnly
 
 
 # Create your views here.
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    permission_classes = [permissions.IsAuthenticated, IsAcademicStaffOrReadOnly]
     filterset_fields = [
         "subject",
         "chapter",
@@ -29,10 +35,14 @@ class QuestionViewSet(viewsets.ModelViewSet):
             return QuestionCreateSerializer
         return QuestionSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
 
 class AnswerOptionViewSet(viewsets.ModelViewSet):
     queryset = AnswerOption.objects.all()
     serializer_class = AnswerOptionSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAcademicStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_fields = [
         "question",
@@ -43,3 +53,6 @@ class AnswerOptionViewSet(viewsets.ModelViewSet):
     ordering_fields = ["updated_at", "created_at"]
     search_fields = ["text", "created_by"]
     pagination_class = PageNumberPagination
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)

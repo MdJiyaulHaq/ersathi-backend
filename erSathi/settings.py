@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     "questions.apps.QuestionsConfig",  # New questions app
 ]
 
+INSTALLED_APPS += ["guardian"]
+
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
@@ -71,6 +73,11 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = "core.User"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",  # required for default auth
+    "guardian.backends.ObjectPermissionBackend",  # enables object-level checks
+)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -173,9 +180,18 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.DjangoModelPermissions",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
+
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
 }
+
+ANONYMOUS_USER_NAME = "anonymous"

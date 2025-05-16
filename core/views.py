@@ -8,6 +8,7 @@ from core.models import StudentProfile
 from core.serializers import StudentProfileSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from .permissions import IsOwnerOrStaff
 
 
 # Create your views here.
@@ -18,13 +19,18 @@ def home(request):
 class StudentProfileViewSet(ModelViewSet):
     queryset = StudentProfile.objects.all()
     serializer_class = StudentProfileSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["discipline"]
     search_fields = ["user__username", "user__email"]
     ordering_fields = ["user__date_joined", "user__first_name", "user__last_name"]
     ordering = ["user__date_joined"]
     pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return StudentProfile.objects.all()
+        return StudentProfile.objects.filter(user=self.request.user)
 
     @action(detail=False, methods=["GET", "PUT", "PATCH", "OPTIONS"])
     def me(self, request):
@@ -36,7 +42,7 @@ class StudentProfileViewSet(ModelViewSet):
                 return Response(serializer.data)
             except StudentProfile.DoesNotExist:
                 return Response({"detail": "Profile not found."}, status=404)
-            
+
         elif request.method in ["PUT", "PATCH"]:
             try:
                 student = StudentProfile.objects.get(user_id=user_id)

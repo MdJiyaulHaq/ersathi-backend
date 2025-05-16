@@ -1,6 +1,5 @@
 from gamification.models import UserBadge, Badge, Point, Leaderboard
 from rest_framework import viewsets, permissions
-from rest_framework import serializers
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
@@ -10,13 +9,13 @@ from .serializers import (
     PointSerializer,
     LeaderboardSerializer,
 )
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from core.permissions import IsAdminOrReadOnly, IsOwnerOrStaff
 
 
-# Create your views here.
 class BadgeViewSet(viewsets.ModelViewSet):
     queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["name", "description", "active"]
     search_fields = ["name", "description"]
@@ -24,17 +23,13 @@ class BadgeViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
     pagination_class = PageNumberPagination
 
-    def get_permissions(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            return [IsAdminUser()]
-        return [IsAuthenticated()]
-
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
 
 class UserBadgeViewSet(viewsets.ModelViewSet):
     serializer_class = UserBadgeSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["user", "badge", "awarded_at", "active"]
     search_fields = ["user__username", "badge__name"]
@@ -53,6 +48,7 @@ class UserBadgeViewSet(viewsets.ModelViewSet):
 
 class PointViewSet(viewsets.ModelViewSet):
     serializer_class = PointSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["user", "value", "reason", "type", "created_at"]
     search_fields = ["user__username", "reason"]
@@ -72,6 +68,7 @@ class PointViewSet(viewsets.ModelViewSet):
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Leaderboard.objects.all()
     serializer_class = LeaderboardSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["user", "total_points", "last_updated"]
     search_fields = ["user__username"]

@@ -9,12 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
+from core.permissions import IsAcademicStaffOrReadOnly, IsOwnerOrStaff
 
 
-# Create your views here.
 class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAcademicStaffOrReadOnly]
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ["title", "exam_type", "subject__name"]
     ordering_fields = ["start_date", "created_at"]
@@ -31,7 +32,10 @@ class ExamViewSet(viewsets.ModelViewSet):
 
         # Check if the user has already attempted this exam
         if ExamAttempt.objects.filter(exam=exam, student=user).exists():
-            return Response({"detail": "You have already attempted this exam."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "You have already attempted this exam."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         start_time = timezone.now()
         end_time = start_time + timedelta(minutes=exam.duration)
@@ -47,13 +51,11 @@ class ExamViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class ExamAttemptViewSet(viewsets.ReadOnlyModelViewSet):
-    def get_queryset(self):
-        queryset = ExamAttempt.objects.filter(student=self.request.user).select_related("exam")
-        exam_id = self.kwargs.get("exam_pk")
-        if exam_id:
-            queryset = queryset.filter(exam_id=exam_id)
-        return queryset
-
+class ExamAttemptViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrStaff]
     serializer_class = ExamAttemptSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return ExamAttempt.objects.all()
+        return ExamAttempt.objects.filter(student=self.request.user)
