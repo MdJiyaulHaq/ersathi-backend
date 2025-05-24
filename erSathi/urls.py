@@ -23,6 +23,14 @@ from django.urls import include, path
 admin.site.site_header = "Er Sathi Admin"
 admin.site.index_title = "Admin"
 
+from django.urls import path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
@@ -39,6 +47,14 @@ urlpatterns = [
     path("auth/", include("djoser.urls.jwt")),
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("chaining/", include("smart_selects.urls")),
+    # API documentation
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/swagger/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
 if settings.DEBUG:
