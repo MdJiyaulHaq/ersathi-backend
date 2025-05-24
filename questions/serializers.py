@@ -36,9 +36,6 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
             "question",
             "text",
             "is_correct",
-            "created_by",
-            "created_at",
-            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
         extra_kwargs = {
