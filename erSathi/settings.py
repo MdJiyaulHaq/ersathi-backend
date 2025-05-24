@@ -199,8 +199,8 @@ SIMPLE_JWT = {
 ANONYMOUS_USER_NAME = "anonymous"
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Your Project API",
-    "DESCRIPTION": "Your project description",
-    "VERSION": "1.0.0",
+    "TITLE": "ErSathi API",
+    "DESCRIPTION": "An engineering license preparation platform.",
+    "VERSION": "1.0.2",
     "SERVE_INCLUDE_SCHEMA": False,
 }
