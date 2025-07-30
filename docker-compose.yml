@@ -21,7 +21,7 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
     command: >
-      sh -c "while ! pg_isready -h db -p 5432 -U bookuser; do sleep 1; done;
+      sh -c "while ! pg_isready -h db -p 5432 -U ${DB_USER}; do sleep 1; done;
              python manage.py makemigrations &&
              python manage.py migrate &&
              gunicorn erSathi.wsgi:application --bind 0.0.0.0:8000"
@@ -40,7 +40,7 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
