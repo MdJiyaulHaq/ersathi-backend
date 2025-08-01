@@ -15,8 +15,15 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 # Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /tmp/requirements.txt
+COPY requirements.dev.txt /tmp/requirements.dev.txt
+
+ARG DEBUG=false
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
+    if [ $DEBUG = "true" ]; \
+    then pip install --no-cache-dir -r /tmp/requirements.dev.txt ; \
+    fi && \
+    rm -rf /tmp
 
 # Copy project
 COPY . .
