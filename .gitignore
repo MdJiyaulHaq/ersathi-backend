@@ -1,5 +1,5 @@
 oracle-ssh.sh
-scripts/oracle-ssh.sh
+scripts/*
 
 # Django #
 *.log
