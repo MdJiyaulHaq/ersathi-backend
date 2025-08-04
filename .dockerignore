@@ -1,3 +1,6 @@
+oracle-ssh.sh
+scripts/oracle-ssh.sh
+
 # Git
 .git
 .gitignore
