@@ -22,43 +22,20 @@ To set up the project locally, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone [your-repository-url]
+git clone https://github.com/MdJiyaulHaq/ersathi-backend.git
 cd ersathi-backend
 ```
 
-2. Create a virtual environment and install dependencies:
-
-````bash
-python -m venv venv
-source venv/bin/activate  # On macOS/Linux
-pip install -r requirements.txt
-
-3. Configure your environment variables:
-- Copy `.env.example` to `.env` and update the settings as needed
-
-4. Run migrations:
-```bash
-python manage.py migrate
-````
-
-5. Start the development server:
+2. Copy the example environment file and adjust values if needed:
 
 ```bash
-python manage.py runserver
+cp .env.example .env
 ```
 
-### Docker Setup
-
-1. Build the Docker image:
+3. Build and start the containers:
 
 ```bash
-docker-compose build
-```
-
-2. Start the containers:
-
-```bash
-docker-compose up
+docker-compose up --build
 ```
 
 The application will be available at `http://localhost:8000`
@@ -110,12 +87,22 @@ The project is organized into several Django apps:
 - Leaderboard system
 - Points system
 
+## Live Demo
+
+Live at: [http://150.230.12.113:8000](http://150.230.12.113:8000)
+Coming soon: [https://api.ersathi.com](https://api.ersathi.com)
+
 ### API Documentation
 
-The API documentation is automatically generated using drf-yasg and can be accessed at:
+The API documentation is automatically generated using drf-spectacular and can be accessed at: [http://150.230.12.113:8000/api/docs/](http://150.230.12.113:8000/api/docs/)
 
-```
-http://localhost:8000/api/docs/
+## Linting and Running Tests
+
+To run linters and tests, you can use the following commands:
+
+```bash
+docker compose run --rm web sh -c "flake8"
+docker compose run --rm web sh -c "pytest"
 ```
 
 ## Contributing
@@ -126,7 +113,13 @@ http://localhost:8000/api/docs/
 4. Push to the branch
 5. Open a Pull Request
 
-Please contact the maintainers before starting any significant work to discuss your plans. Token will be created for you to use in the development environment. Whoever wants to work on the feature will have a token.
+For major changes or features, please open an issue to discuss your proposal first.
+
+If your contribution requires authentication (e.g., API token), please contact the maintainers to receive a development token for local testing.
+
+## Maintainers
+
+- Md Jiyaul Haq ([https://github.com/MdJiyaulHaq](https://github.com/MdJiyaulHaq))
 
 ## License
 
