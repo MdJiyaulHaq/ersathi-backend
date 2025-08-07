@@ -1,5 +1,8 @@
-oracle-ssh.sh
+# Ignore everything inside scripts/
 scripts/*
+
+# But DO track this one file:
+!scripts/deploy.sh
 
 # Django #
 *.log
