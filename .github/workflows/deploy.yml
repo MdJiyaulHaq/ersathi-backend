@@ -20,4 +20,4 @@ jobs:
 
       - name: Trigger deployment on VPS
         run: |
-          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash ~/deploy.sh'
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash ~/ersathi-backend/scripts/deploy.sh'
