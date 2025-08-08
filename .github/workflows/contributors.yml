@@ -6,8 +6,9 @@ on:
 jobs:
   add-contributors:
     runs-on: ubuntu-latest
+    name: Generate Contributors List
     steps:
       - uses: actions/checkout@v2
-      - uses: bobae/contributors-readme-action@v1
+      - uses: akhilmhdh/contributors-readme-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
