@@ -20,4 +20,9 @@ jobs:
 
       - name: Trigger deployment on VPS
         run: |
-          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash ~/ersathi-backend/scripts/deploy.sh'
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
+            if [ ! -d ~/ersathi-backend ]; then
+              git clone git@github.com:MdJiyaulHaq/ersathi-backend.git ~/ersathi-backend;
+            fi
+            cd ~/ersathi-backend && git pull origin main && bash scripts/deploy.sh
+          '
