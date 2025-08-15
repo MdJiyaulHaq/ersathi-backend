@@ -27,7 +27,7 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["username"]
 
     class Meta:
         verbose_name = _("user")
@@ -44,6 +44,8 @@ class StudentProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="student_profile",
     )
+    first_name = models.CharField(max_length=55)
+    last_name = models.CharField(max_length=55)
     discipline = models.ForeignKey(
         Discipline,
         on_delete=models.PROTECT,
