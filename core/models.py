@@ -44,8 +44,8 @@ class StudentProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="student_profile",
     )
-    first_name = models.CharField(max_length=55)
-    last_name = models.CharField(max_length=55)
+    first_name = models.CharField(max_length=55, default="")
+    last_name = models.CharField(max_length=55, default="")
     discipline = models.ForeignKey(
         Discipline,
         on_delete=models.PROTECT,
