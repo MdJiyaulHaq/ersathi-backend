@@ -6,12 +6,16 @@ from rest_framework import serializers
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField()
+
     class Meta:
         model = StudentProfile
         fields = [
             "id",
+            "first_name",
+            "last_name",
             "user_id",
-            "discipline",
+            "university",
+            "program",
             "phone",
             "bio",
             "date_of_birth",

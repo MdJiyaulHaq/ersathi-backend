@@ -46,7 +46,8 @@ class StudentProfile(models.Model):
     )
     first_name = models.CharField(max_length=55, default="")
     last_name = models.CharField(max_length=55, default="")
-    discipline = models.ForeignKey(
+    university = models.CharField(max_length=255, default="")
+    program = models.ForeignKey(
         Discipline,
         on_delete=models.PROTECT,
         related_name="students",
