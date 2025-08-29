@@ -21,7 +21,7 @@ class StudentProfileViewSet(ModelViewSet):
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ["discipline"]
+    filterset_fields = ["program"]
     search_fields = ["user__username", "user__email"]
     ordering_fields = ["user__date_joined", "user__first_name", "user__last_name"]
     ordering = ["user__date_joined"]
