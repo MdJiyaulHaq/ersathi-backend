@@ -62,12 +62,12 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
         "bio",
-        "discipline",
+        "program",
         "phone",
         "registration_date",
         "last_active",
     )
-    list_filter = ("discipline", "registration_date", "last_active")
+    list_filter = ("program", "registration_date", "last_active")
     search_fields = (
         "user__email",
         "user__username",
@@ -75,7 +75,7 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "user__last_name",
         "phone",
     )
-    list_editable = ("phone", "discipline")
+    list_editable = ("phone", "program")
     list_select_related = ("user",)
     ordering = ("user__first_name", "user__last_name")
     list_per_page = 10
@@ -83,7 +83,7 @@ class StudentProfileAdmin(admin.ModelAdmin):
 
     fields = (
         "user",
-        "discipline",
+        "program",
         "phone",
         "bio",
         "registration_date",
